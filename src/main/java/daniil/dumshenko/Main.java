@@ -3,6 +3,8 @@ package daniil.dumshenko;
 public class Main
 {
     public static void main( String[] args ) {
-        System.out.println( "Hello World!" );
+        MortgageCalculator mortgageCalculator = new MortgageCalculator();
+        String result = mortgageCalculator.calculateMortgage();
+        System.out.println("Mortgage: " + result);
     }
 }
