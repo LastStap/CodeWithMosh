@@ -7,7 +7,7 @@ public class TemperatureReport {
     private double averageTempFormatted;
   private int minTemp;
   private int maxTemp;
-  private int countOfDaysWithTemp25;
+  private int countOfDaysWithTempHigherThan25;
 
   public void temperatureReport() {
     Scanner scanner = new Scanner(System.in);
@@ -38,23 +38,22 @@ public class TemperatureReport {
 
     int[] temps = {day1Temp, day2Temp, day3Temp, day4Temp, day5Temp, day6Temp, day7Temp};
 
-    minTemp = Arrays.stream(temps).min().orElse(Integer.MAX_VALUE);
-    maxTemp = Arrays.stream(temps).max().orElse(Integer.MIN_VALUE);
+    minTemp = Arrays.stream(temps).min().orElse(Integer.MIN_VALUE);
+    maxTemp = Arrays.stream(temps).max().orElse(Integer.MAX_VALUE);
 
-    countOfDaysWithTemp25 = (int) Arrays.stream(temps).filter(e -> e > 25).count();
+    countOfDaysWithTempHigherThan25 = (int) Arrays.stream(temps).filter(e -> e > 25).count();
   }
 
   @Override
   public String toString() {
-    return "TemperatureReport{:"
-        + "\nAverageTemp="
+    return "TemperatureReport:"
+        + "\nAverageTemp = "
         + averageTempFormatted
-        + "\nMinimumTemp="
+        + "\nMinimumTemp = "
         + minTemp
-        + "\nMaximumTemp="
+        + "\nMaximumTemp = "
         + maxTemp
-        + "\nCountOfDaysWithTempHigherThan25="
-        + countOfDaysWithTemp25
-        + '}';
+        + "\nCountOfDaysWithTempHigherThan25 = "
+        + countOfDaysWithTempHigherThan25;
   }
 }
