@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.otherProjects;
 
 import java.util.Date;
 

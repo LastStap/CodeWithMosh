@@ -14,12 +14,16 @@ public class MortgageCalculator {
     double annualInterest = readNumber("Annual Interest Rate", 1, 30);
     int period = (int) readNumber("Period (Years)", 1, 30);
 
+    printPaymentMethod(period, principal, annualInterest);
+
+    return calculateMortgage(principal, annualInterest, period);
+  }
+
+  private void printPaymentMethod(int period, int principal, double annualInterest) {
     for (int months = 1; months <= period * monthsInYear; months++) {
       double balance = calculateBalance(principal, annualInterest, period, months);
       System.out.println(months + " " + NumberFormat.getCurrencyInstance().format(balance));
     }
-
-    return calculateMortgage(principal, annualInterest, period);
   }
 
   public String calculateMortgage(int principal, double annualInterest, int period) {

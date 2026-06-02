@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.otherProjects;
 
 public class Factorial {
     public static int getFactorial(int n) {
