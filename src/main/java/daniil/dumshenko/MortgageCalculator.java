@@ -57,5 +57,4 @@ public class MortgageCalculator {
 
     return currency.format(result);
   }
-  ;
 }
