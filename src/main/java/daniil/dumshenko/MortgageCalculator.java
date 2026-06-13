@@ -8,68 +8,56 @@ public class MortgageCalculator {
   final int percent = 100;
   private final Scanner scanner = new Scanner(System.in);
 
-  public String mortgageCalculator() {
+  public String calculateMortgage() {
+    final int monthsInYear = 12;
+    final int percent = 100;
+    int principal = 0;
+    double monthlyInterest = 0;
+    int periodInMonths = 0;
 
-    int principal = (int) readNumber("Principal", 1000, 1_000_000);
-    double annualInterest = readNumber("Annual Interest Rate", 1, 30);
-    int period = (int) readNumber("Period (Years)", 1, 30);
+    Scanner scanner = new Scanner(System.in);
 
-    printPaymentMethod(period, principal, annualInterest);
+    while (true) {
+      System.out.print("Principal ($1k - $1m): ");
+      principal = scanner.nextInt();
 
-    return calculateMortgage(principal, annualInterest, period);
-  }
-
-  private void printPaymentMethod(int period, int principal, double annualInterest) {
-    for (int months = 1; months <= period * monthsInYear; months++) {
-      double balance = calculateBalance(principal, annualInterest, period, months);
-      System.out.println(months + " " + NumberFormat.getCurrencyInstance().format(balance));
+      if (principal >= 100 && principal <= 1_000_000) {
+        break;
+      } else {
+        System.out.println("Enter a value between 1000 and 1 000 000");
+      }
     }
-  }
 
-  public String calculateMortgage(int principal, double annualInterest, int period) {
-    double monthlyInterest = (annualInterest / percent / monthsInYear);
-    int numberOfPayments = period * monthsInYear;
+    while (true) {
+      System.out.print("Annual Interest Rate: ");
+      double annualInterest = scanner.nextDouble();
+
+      if (annualInterest > 0 && annualInterest <= 30) {
+        monthlyInterest = (annualInterest / percent / monthsInYear);
+        break;
+      } else {
+        System.out.println("Enter a value that greater than 0 and less than or equal to 30");
+      }
+    }
+
+    while (true) {
+      System.out.print("Period (Years): ");
+      int period = scanner.nextInt();
+
+      if (period >= 1 && period <= 30) {
+        periodInMonths = period * monthsInYear;
+        break;
+      } else {
+        System.out.println("Enter a value between 1 and 30");
+      }
+    }
 
     double result =
         principal
-            * ((monthlyInterest * (Math.pow((1 + monthlyInterest), numberOfPayments)))
-                / ((Math.pow((1 + monthlyInterest), (numberOfPayments))) - 1));
+            * ((monthlyInterest * (Math.pow((1 + monthlyInterest), periodInMonths)))
+                / ((Math.pow((1 + monthlyInterest), (periodInMonths))) - 1));
     NumberFormat currency = NumberFormat.getCurrencyInstance();
 
     return currency.format(result);
-  }
-
-  public double readNumber(String prompt, double min, double max) {
-    double value;
-
-    while (true) {
-      System.out.print(prompt + ": ");
-      if (!scanner.hasNextDouble()) {
-        System.out.println("Enter a valid number.");
-        scanner.next();
-        continue;
-      }
-
-      value = scanner.nextDouble();
-
-      if (value >= min && value <= max) {
-        break;
-      } else {
-        System.out.println("Value must be between " + min + " and " + max);
-      }
-    }
-    return value;
-  }
-
-  public double calculateBalance(
-      int principal, double annualInterest, int period, int numberOfPaymentsMade) {
-
-    double monthlyInterest = (annualInterest / percent / monthsInYear);
-    int numberOfPayments = period * monthsInYear;
-
-    return principal
-        * (Math.pow(1 + monthlyInterest, numberOfPayments)
-            - Math.pow(1 + monthlyInterest, numberOfPaymentsMade))
-        / (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
   }
 }
