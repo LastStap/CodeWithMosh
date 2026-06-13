@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.otherProjects;
 
 import java.util.Arrays;
 import java.util.Scanner;

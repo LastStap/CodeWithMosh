@@ -4,6 +4,9 @@ import java.text.NumberFormat;
 import java.util.Scanner;
 
 public class MortgageCalculator {
+  final int monthsInYear = 12;
+  final int percent = 100;
+  private final Scanner scanner = new Scanner(System.in);
 
   public String calculateMortgage() {
     final int monthsInYear = 12;
@@ -57,5 +60,4 @@ public class MortgageCalculator {
 
     return currency.format(result);
   }
-  ;
 }
