@@ -94,3 +94,82 @@ git status  -  modified:   learning-journal.md
 
 -----
 
+- `pom.xml` - це головний конфігураційний файл Maven-проєкту
+- `src/main/java` - основна директорія проекту, де лежать всі основні файли
+- `src/test/java` -  директорія для всіх тестів
+- `target` - це директорія скомпільованого проекту
+
+
+-------------------
+
+
+groupId -  daniil.dumshenko
+
+artifactId - CodeWithMosh
+
+version - 1.0-SNAPSHOT
+
+maven.compiler.source - 25
+
+maven.compiler.target - 25
+
+test dependency - junit
+
+-------------------
+
+java: ';' expected
+
+-------------------
+
+## День 1. Завдання 4.2 та 4.3
+
+### Що створила `mvn compile`
+
+Maven прочитав `pom.xml`, знайшов усі `.java` файли в `src/main/java`, запустив `javac` і поклав скомпільований `.class` файл у `target/classes`. По суті — це автоматизований `javac` з правильними параметрами.
+
+### Навіщо `-cp target/classes`
+
+`-cp` (classpath) — це вказівка JVM, де шукати скомпільовані класи. Без цього JVM не знає, де лежить `HelloDeveloper.class`. `target/classes` — директорія, куди Maven поклав результат компіляції.
+
+### Чому повне ім'я `daniil.dumshenko.HelloDeveloper`
+
+Тому що клас має `package daniil.dumshenko`. JVM шукає файл за шляхом `daniil/dumshenko/HelloDeveloper.class` відносно classpath. Якщо написати просто `HelloDeveloper` — JVM не знайде клас, бо він не в кореневому пакеті.
+
+### Порівняння трьох способів запуску
+
+IntelliJ IDEA:
+- Автоматично: компіляція, пошук classpath, запуск, виведення в консоль
+- Вручну: натиснути Run
+
+Maven (`mvn compile` + `java`):
+- Автоматично: пошук усіх `.java` файлів, classpath, розміщення в `target/`
+- Вручну: написати дві команди
+
+Ручний `javac`:
+- Автоматично: нічого
+- Вручну: вказати шлях до файлу, директорію виводу (`-d`), classpath, повне ім'я класу
+
+Коротко:
+- IDEA — все за тебе, ти лише пишеш код.
+- Maven — автоматизує компіляцію, але запуск все одно вручну.
+- `javac` — повний контроль, але кожен крок вручну.
+
+(у цих завданнях мені допомогла ai)
+
+-----------------
+
+
+Який файл є source code? - HelloDeveloper.java
+
+Який файл містить bytecode? - HelloDeveloper.class
+
+Яка команда компілює source code? -  mvn compile
+
+Яка команда запускає клас у JVM? - java -cp /tmp/codewithmosh-day1 daniil.dumshenko.HelloDeveloper
+
+Чим Maven допоміг порівняно з ручним javac? - Він сам знайшов усі джава файли
+
+---------------
+
+
+
