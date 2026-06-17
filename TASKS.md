@@ -325,7 +325,7 @@ target/classes/daniil/dumshenko/HelloDeveloper.class
 Запусти програму:
 
 ```bash
-java -cp target/classes daniil.dumshenko.HelloDeveloper
+java -cp target/classes daniil.dumshenko.previousLessons.HelloDeveloper
 ```
 
 Запиши:
@@ -333,7 +333,7 @@ java -cp target/classes daniil.dumshenko.HelloDeveloper
 - що створила команда `mvn compile`;
 - навіщо використовується `-cp target/classes`;
 - чому в команді запуску вказано повне ім'я
-  `daniil.dumshenko.HelloDeveloper`.
+  `daniil.dumshenko.previousLessons.HelloDeveloper`.
 
 ### Завдання 4.3. Скомпілюй без Maven
 
@@ -352,7 +352,7 @@ javac -d /tmp/codewithmosh-day1 src/main/java/daniil/dumshenko/HelloDeveloper.ja
 Запусти його:
 
 ```bash
-java -cp /tmp/codewithmosh-day1 daniil.dumshenko.HelloDeveloper
+java -cp /tmp/codewithmosh-day1 daniil.dumshenko.previousLessons.HelloDeveloper
 ```
 
 Порівняй:
@@ -375,13 +375,13 @@ find target/classes -name 'HelloDeveloper.class'
 Переглянь структуру скомпільованого класу:
 
 ```bash
-javap -classpath target/classes daniil.dumshenko.HelloDeveloper
+javap -classpath target/classes daniil.dumshenko.previousLessons.HelloDeveloper
 ```
 
 За бажанням переглянь інструкції bytecode:
 
 ```bash
-javap -c -classpath target/classes daniil.dumshenko.HelloDeveloper
+javap -c -classpath target/classes daniil.dumshenko.previousLessons.HelloDeveloper
 ```
 
 Не потрібно запам'ятовувати bytecode. Треба зрозуміти, що JVM виконує не
@@ -497,7 +497,7 @@ git commit -m "Complete day 1 Java environment exercises"
 
 ```bash
 mvn compile
-java -cp target/classes daniil.dumshenko.HelloDeveloper
+java -cp target/classes daniil.dumshenko.previousLessons.HelloDeveloper
 git diff --check
 ```
 
@@ -632,7 +632,7 @@ git diff --check
 
    ```bash
    mvn compile
-   java -cp target/classes daniil.dumshenko.HelloDeveloper
+   java -cp target/classes daniil.dumshenko.previousLessons.HelloDeveloper
    git diff --check
    ```
 
@@ -984,7 +984,7 @@ Example path: C:\...
 
 ```bash
 mvn compile
-java -cp target/classes daniil.dumshenko.PersonalProfile
+java -cp target/classes daniil.dumshenko.previousLessons.PersonalProfile
 ```
 
 Потім скомпілюй клас вручну:
@@ -992,7 +992,7 @@ java -cp target/classes daniil.dumshenko.PersonalProfile
 ```bash
 mkdir -p /tmp/codewithmosh-day2
 javac -d /tmp/codewithmosh-day2 src/main/java/daniil/dumshenko/PersonalProfile.java
-java -cp /tmp/codewithmosh-day2 daniil.dumshenko.PersonalProfile
+java -cp /tmp/codewithmosh-day2 daniil.dumshenko.previousLessons.PersonalProfile
 ```
 
 Обидва способи повинні давати однаковий результат.
@@ -1046,8 +1046,8 @@ java -cp /tmp/codewithmosh-day2 daniil.dumshenko.PersonalProfile
 
 ```bash
 mvn compile
-java -cp target/classes daniil.dumshenko.TypeExperiments
-java -cp target/classes daniil.dumshenko.PersonalProfile
+java -cp target/classes daniil.dumshenko.previousLessons.TypeExperiments
+java -cp target/classes daniil.dumshenko.previousLessons.PersonalProfile
 git diff --check
 git status
 git diff --stat
@@ -1183,8 +1183,8 @@ git diff --stat
 
    ```bash
    mvn compile
-   java -cp target/classes daniil.dumshenko.TypeExperiments
-   java -cp target/classes daniil.dumshenko.PersonalProfile
+   java -cp target/classes daniil.dumshenko.previousLessons.TypeExperiments
+   java -cp target/classes daniil.dumshenko.previousLessons.PersonalProfile
    git diff --check
    ```
 

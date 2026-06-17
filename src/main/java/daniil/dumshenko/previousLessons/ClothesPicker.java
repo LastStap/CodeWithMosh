@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.previousLessons;
 
 import java.util.Scanner;
 

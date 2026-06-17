@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.previousLessons;
 
 public class PersonalProfile {
 

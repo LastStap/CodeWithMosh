@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.previousLessons;
 
 import java.text.NumberFormat;
 import java.util.Scanner;
