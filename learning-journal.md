@@ -180,4 +180,391 @@ Maven (`mvn compile` + `java`):
 - Maven — це інструмент автоматизації збірки та керування залежностями, а не архів бібліотек.
 - `git add` додає вибрані зміни до staging area, а `git commit` зберігає підготовлений snapshot в історії репозиторію.
 
+---------------
+Я завершив день 1, просто не написав всього.
+## День 2. Повторення
+
+Який шлях проходить HelloDeveloper.java до результату в консолі?
+Спочатку компілятор компілює HelloDeveloper.java у HelloDeveloper.class, потім JVM безпосередньо завантажує та виконує bytecode.
+
+Чим JDK відрізняється від JVM?
+у JDK входять компілятор, JVM, стандартні бібліотеки та інші інструменти.
+
+Що створює javac?
+bytecode, .class файли
+
+Для чого команді java потрібен classpath?
+це шлях, де JVM шукає скомпільовані класи
+
+Яка стандартна сигнатура точки входу Java-програми?
+public static void main(String[] args) {}
+
+---------------
+
+До запуску коду передбач результат кожного фрагмента:
+
+```java
+int age = 25;
+age = 26;
+System.out.println(age);
+```
+result: 26
+
+```java
+int result = 5 / 2;
+System.out.println(result);
+```
+result: 2
+
+```java
+double result = 5 / 2;
+System.out.println(result);
+```
+result: 2.0
+
+```java
+double result = 5.0 / 2;
+System.out.println(result);
+```
+result: 2.5
+
+```java
+char letter = 'A';
+System.out.println(letter);
+```
+result: A
+
+---------------------
+
+| Тип | Що зберігає | Приклад | Коли обрати    |
+|---|-------------|--|----------------|
+| `byte` | 1 байт      | byte age = 25; | Майже не використовується |
+| `short` |   2 байти          | short year = 2025; |      використовується, коли потрібна економія пам'яті          |
+| `int` |      Цілі числа (4 байти)       | int count = 1000; |       Стандартний вибір для більшості цілих чисел         |
+| `long` |      Великі цілі числа (8 байт)       | long population = 8000000000L; |      Коли int може бути замалим          |
+| `float` |      Дробові числа одинарної точності (4 байти)       | float price = 19.99f; |         коли важлива економія пам'яті       |
+| `double` |     Дробові числа подвійної точності (8 байт)        | double pi = 3.14159; |           Стандартний вибір для дробових чисел     |
+| `char` |       Один символ Unicode (2 байти)      | char grade = 'A'; |     Для зберігання окремих символів           |
+| `boolean` |       Логічне значення true або false      | boolean isActive = true; |     Для умов та логічних перевірок           |
+
+--------------------------
+
+1. Що безпосередньо зберігає primitive-змінна? - Значення, а не посилання на значення
+2. Що концептуально зберігає reference-змінна? - посилання на значення
+3. Чому `String` не є primitive type? - тому що це клас і він має методи
+4. Чим одинарні лапки відрізняються від подвійних? - одинарні лапки використовуються для char, а подвійні лапки використовуються для String
+5. Чому локальну змінну потрібно ініціалізувати перед читанням? - локальна змінна не отримує значення за замовчуванням
+6. Що означає ключове слово `final`? - змінну, яку не можна переназначити
+7. Чим declaration, initialization і assignment відрізняються між собою? - declaration це оголошення змінної, initialization це присвоєння значення змінній, а assignment це повторне призначення значення змінній
+
+----------------------------
+
+- `long` із суфіксом `L`; - 800000000L
+- `float` із суфіксом `F`; - 1.56F
+- читабельного числа з `_`; - 100_000_000
+- символу `char`; - A
+- рядка з `\n`; - "Hello \nWorld"
+- рядка з `\t`; - "Hello \tWorld"
+- рядка з `\"`; - "He said: \"Hello World\""
+- Windows-шляху або іншого тексту з `\\`. - "C:\\Users\\Daniil\\Documents"
+
+-----------------------
+
+        // 1. int -> long
+        int intValue1 = 100;
+        long longValue = intValue1; // implicit casting
+        System.out.println("1. int -> long");
+        System.out.println("Casting: implicit");
+        System.out.println("Predicted: 100");
+        System.out.println("Actual: " + longValue);
+        System.out.println("Information loss: no");
+        System.out.println();
+
+        // 2. int -> double
+        int intValue2 = 100;
+        double doubleValue = intValue2; // implicit casting
+        System.out.println("2. int -> double");
+        System.out.println("Casting: implicit");
+        System.out.println("Predicted: 100.0");
+        System.out.println("Actual: " + doubleValue);
+        System.out.println("Information loss: no");
+        System.out.println();
+
+        // 3. double -> int
+        double doubleValue2 = 10.99;
+        int intValue3 = (int) doubleValue2; // explicit casting
+        System.out.println("3. double -> int");
+        System.out.println("Casting: explicit");
+        System.out.println("Predicted: 10");
+        System.out.println("Actual: " + intValue3);
+        System.out.println("Information loss: yes, fractional part is lost");
+        System.out.println();
+
+        // 4. int -> byte у межах byte
+        int intValue4 = 100;
+        byte byteValue1 = (byte) intValue4; // explicit casting
+        System.out.println("4. int -> byte within byte range");
+        System.out.println("Casting: explicit");
+        System.out.println("Predicted: 100");
+        System.out.println("Actual: " + byteValue1);
+        System.out.println("Information loss: possible in general, but not here");
+        System.out.println();
+
+        // 5. int -> byte поза межами byte
+        int intValue5 = 130;
+        byte byteValue2 = (byte) intValue5; // explicit casting
+        System.out.println("5. int -> byte outside byte range");
+        System.out.println("Casting: explicit");
+        System.out.println("Predicted: -126");
+        System.out.println("Actual: " + byteValue2);
+        System.out.println("Information loss: yes");
+
+---------------------
+
+byte maximum = Byte.MAX_VALUE;
+byte overflowed = (byte) (maximum + 1);
+result: Maximum: -128
+
+double sum = 0.1 + 0.2;
+System.out.println(sum);
+System.out.println(sum == 0.3);
+result: 0.30000000000000004, false
+
+--------------------
+
+## День 2. Завдання 4.4. Пояснення вибору типів
+
+| Змінна | Обраний тип | Чому цей тип |
+|---|---|---|
+| `args` | `String[]` | Це масив рядків, який Java передає в метод `main` як аргументи командного рядка. Це reference type. |
+| `name` | `String` | Ім'я є текстом, тому потрібен рядок. `String` є reference type. |
+| `fourname` | `String` | Прізвище є текстом, тому використано `String`. |
+| `age` | `int` | Вік — це ціле число. `int` є стандартним вибором для більшості цілих чисел. |
+| `height` | `float` | Зріст має дробову частину. `float` підходить для приблизного дробового значення, але менш точний за `double`. |
+| `weight` | `double` | Вага має дробову частину. `double` є стандартним типом для дробових чисел у Java. |
+| `firstNameLetter` | `char` | Зберігає один символ — першу літеру імені. |
+| `studentStatus` | `boolean` | Зберігає логічне значення: студент чи ні. |
+| `numberOfFinishedStudiedDays` | `byte` | Кількість завершених днів зараз маленька, тому `byte` підходить, але має малий діапазон. |
+| `numberOfHours` | `short` | Кількість годин — ціле число, яке може бути більшим за `byte`, але ще не потребує `int`. |
+| `roles` | `String` | Роль/опис є текстом, тому використано `String`. |
+| `countries` | `String` | Назва країни є текстом, тому використано `String`. |
+| `likedNumber` | `long` | Число дуже велике й не поміститься в `int`, тому потрібен `long` із суфіксом `L`. |
+| `NUMBER_OF_MONTH_IN_YEAR` | `static final int` | Кількість місяців у році не повинна змінюватися. Це ціле число, тому `int`. |
+| `NAME_OF_LEARNING_PROGRAMM` | `static final String` | Назва навчальної програми є текстом і не повинна змінюватися. |
+| `NUMBER_OF_LEARNING_DAYS` | `static final int` | Загальна кількість навчальних днів не повинна змінюватися. Це ціле число, тому `int`. |
+
+### 1. Які змінні є primitive?
+
+Primitive-змінні:
+
+- `age` — `int`
+- `height` — `float`
+- `weight` — `double`
+- `firstNameLetter` — `char`
+- `studentStatus` — `boolean`
+- `numberOfFinishedStudiedDays` — `byte`
+- `numberOfHours` — `short`
+- `likedNumber` — `long`
+- `NUMBER_OF_MONTH_IN_YEAR` — `int`
+- `NUMBER_OF_LEARNING_DAYS` — `int`
+
+### 2. Які змінні є reference?
+
+Reference-змінні:
+
+- `args` — `String[]`
+- `name` — `String`
+- `fourname` — `String`
+- `roles` — `String`
+- `countries` — `String`
+- `NAME_OF_LEARNING_PROGRAMM` — `String`
+
+`String` не є primitive type, бо це клас. Змінна типу `String` концептуально зберігає посилання на об'єкт рядка.
+
+### 3. Які значення не повинні змінюватися?
+
+Не повинні змінюватися значення, які оголошені через `final`:
+
+- `NUMBER_OF_MONTH_IN_YEAR`
+- `NAME_OF_LEARNING_PROGRAMM`
+- `NUMBER_OF_LEARNING_DAYS`
+
+Також логічно можна було б не змінювати такі значення, якщо профіль статичний:
+
+- `name`
+- `fourname`
+- `firstNameLetter`
+- `countries`
+
+### 4. Де в програмі можливе переповнення або втрата точності?
+
+Можливе переповнення:
+
+- `byte numberOfFinishedStudiedDays` — тип `byte` має маленький діапазон. Якщо кількість днів стане більшою за `127`, може бути переповнення.
+- `short numberOfHours` — якщо кількість годин стане дуже великою, `short` теж може переповнитися.
+- `int age`, `NUMBER_OF_MONTH_IN_YEAR`, `NUMBER_OF_LEARNING_DAYS` — теоретично `int` теж може переповнитися, але для цих значень це майже нереально.
+- `long likedNumber` — має великий діапазон, але теж має межу. Якщо число буде більше за максимальне значення `long`, буде помилка або переповнення при обчисленнях.
+
+Можлива втрата точності:
+
+- `float height = 1.9f;` — `float` зберігає дробові числа не абсолютно точно.
+- `double weight = 111.5;` — `double` точніший за `float`, але також може мати проблеми з точністю для деяких десяткових дробів.
+
+### 5. Чи є в коді число або текст, який краще зробити константою?
+
+Так, у коді є значення, які краще зробити константами:
+
+- `"================================"` — повторюється кілька разів, краще зробити константою, наприклад `SEPARATOR`.
+- `"PERSONAL PROFILE"` — заголовок профілю, можна зробити константою `PROFILE_TITLE`.
+- Тексти підписів у `System.out.println`, наприклад `"Name: "`, `"age: "`, `"height: "` — якщо вони часто повторювалися б або використовувалися в кількох місцях, їх теж можна було б винести в константи.
+- Значення `10` у `NUMBER_OF_LEARNING_DAYS` вже правильно зроблено константою.
+- Значення `12` у `NUMBER_OF_MONTH_IN_YEAR` вже правильно зроблено константою.
+
+--------------------
+
+/IdeaProjects/CodeWithMosh main +2 !6 ❯ java -cp target/classes daniil.dumshenko.PersonalProfile                                                                                                                                                                                                                              22:27:31
+================================
+PERSONAL PROFILE
+================================
+Name: Viktor
+fourname: Yanukovich
+age: 55
+height: 1.9
+weight: 111.5
+first name: V
+studentStatus: false
+numberOfFinishedStudiedDays: 3
+numberOfHours: 60
+roles: loxpovniy
+countries: Ukraine
+likedNumber: 999999999999999999
+Number of month: 12
+Name of learning program: Kozachok
+number of learning days: 10
+remaining days: 7
+special chars demo: tab:	here
+newline above
+"quoted"
+backslash: \
+================================
+
+---------------------------
+
+~/IdeaProjects/CodeWithMosh main +2 !6 ❯ mkdir -p /tmp/codewithmosh-day2                                                                                                                                                                                                                                                       22:27:31
+javac -d /tmp/codewithmosh-day2 src/main/java/daniil/dumshenko/PersonalProfile.java
+java -cp /tmp/codewithmosh-day2 daniil.dumshenko.PersonalProfile
+================================
+PERSONAL PROFILE
+================================
+Name: Viktor
+fourname: Yanukovich
+age: 55
+height: 1.9
+weight: 111.5
+first name: V
+studentStatus: false
+numberOfFinishedStudiedDays: 3
+numberOfHours: 60
+roles: loxpovniy
+countries: Ukraine
+likedNumber: 999999999999999999
+Number of month: 12
+Name of learning program: Kozachok
+number of learning days: 10
+remaining days: 7
+special chars demo: tab:	here
+newline above
+"quoted"
+backslash: \
+================================
+
+--------------------
+
+## День 2. Завдання 5.2. Перевірка compiler errors
+
+1. **Присвоїв `double` змінній `int` без explicit cast**
+
+Зміна в коді: `int brokenAge = 55.5;`
+
+Головний рядок compiler error: `java: incompatible types: possible lossy conversion from double to int`
+
+Причина: `double` може зберігати дробову частину, а `int` зберігає тільки ціле число. Java не робить таке перетворення автоматично, бо дробова частина може бути втрачена.
+
+Виправлення: або зробити explicit cast `int brokenAge = (int) 55.5;`, або використати правильний тип `double brokenAge = 55.5;`.
+
+2. **Присвоїв текст у подвійних лапках змінній `char`**
+
+Зміна в коді: `char brokenLetter = "V";`
+
+Головний рядок compiler error: `java: incompatible types: java.lang.String cannot be converted to char`
+
+Причина: `char` зберігає один символ і записується в одинарних лапках. Подвійні лапки створюють `String`, навіть якщо всередині тільки один символ.
+
+Виправлення: використати одинарні лапки `char brokenLetter = 'V';`, або якщо потрібен текст, тоді використати `String brokenLetter = "V";`.
+
+3. **Спробував повторно присвоїти значення `final`-змінній**
+
+Зміна в коді: `NUMBER_OF_LEARNING_DAYS = 20;`
+
+Головний рядок compiler error: `java: cannot assign a value to final variable NUMBER_OF_LEARNING_DAYS`
+
+Причина: `final` означає, що змінній можна присвоїти значення тільки один раз. Після ініціалізації її не можна переназначити.
+
+Виправлення: прибрати повторне присвоєння й залишити тільки початкове значення `final int NUMBER_OF_LEARNING_DAYS = 10;`.
+
+Висновок: `double` не можна автоматично присвоїти в `int`, бо можлива втрата точності; `char` і `String` — різні типи; `final`-змінну не можна змінювати після першого присвоєння. Після перевірки навмисні помилки в коді не залишені.
+
+------------------------
+
+Завдання 5.3. Фінальні команди - виконав.
+
+--------------------
+
+Назви 8 primitive types.
+byte, short, int, long, float, double, char, boolean.
+Чим primitive type відрізняється від reference type?
+Primitive зберігає саме значення, а reference — посилання на об'єкт.
+Чому String пишеться з великої літери?
+Тому що String — це клас, а назви класів у Java пишуться з великої літери.
+
+Коли Java виконує implicit casting?
+Коли перетворення є безпечним, наприклад:
+
+int a = 10;
+long b = a;
+
+Чим explicit casting може бути небезпечним?
+Може призвести до втрати даних або точності.
+
+double d = 10.9;
+int i = (int) d; // 10
+Чому byte може перейти з 127 до -128?
+Через переповнення: byte має діапазон від -128 до 127.
+Чому 0.1 + 0.2 може не дорівнювати точно 0.3?
+Тому що float і double зберігають числа у двійковому форматі, де деякі десяткові дроби неможливо представити точно.
+Для чого використовують final?
+Щоб заборонити зміну значення змінної після її ініціалізації (створення констант).
+Чому magic numbers ускладнюють підтримку коду?
+Незрозуміло, що вони означають, і якщо значення треба змінити, доводиться шукати його по всьому коду.
+Який тип ти обереш для грошей у майбутньому та чому не double?
+BigDecimal, тому що він забезпечує точні обчислення без помилок округлення, які можливі у double.
+
+---------------
+
+## День 2. Щоденний звіт
+
+**Що зробив сьогодні:**
+- Повторив, як HelloDeveloper.java проходить шлях до консолі: javac → bytecode → JVM.
+- Написав PersonalProfile: всі 8 примітивних типів, 3 `static final` константи, обчислення `remainingDays`, escape-послідовності (`\t`, `\n`, `\"`, `\\`).
+- Написав TypeExperiments: 5 casting-прикладів (int→long, int→double, double→int, int→byte в межах, int→byte поза межами), overflow byte, демо `0.1 + 0.2 != 0.3`.
+- Навмисно зламав і відновив код (compiler errors: lossy conversion, char/String, final reassign).
+- Виконав фінальні команди `javac`/`java` з classpath.
+
+**Що було складно:**
+Narrowing casting між int→byte поза межами: не одразу зрозумів, чому 130 стає -126. Зрозумів після того, як подивився на бінарне представлення.
+
+**Що дізнався нового:**
+- `0.1 + 0.2` у double дає `0.30000000000000004` — IEEE 754 не може точно представити деякі десяткові дроби у двійковому форматі.
+- `static final` на рівні класу відрізняється від локального `final`: `static` означає, що поле належить класу, а не екземпляру.
+--------------------
 
