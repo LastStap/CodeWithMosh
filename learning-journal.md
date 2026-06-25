@@ -693,3 +693,482 @@ double e = 5 + 2.0 * 4 / 3;
 
 ---------------------------
 
+## День 3. Завдання 4.2. Перевірка `ArrayStatistics`
+
+### Масив `onlyIncome`
+
+```java
+int[] onlyIncome = {100, 200, 300};
+```
+
+- Прогноз: `sum = 600`, `min = 100`, `max = 300`, `average = 200.0`.
+- Фактичний результат за поточним кодом: `sum = 600`, `min = 300`, `max = 0`,
+  `average = 200.0`.
+- Reverse: `[300, 200, 100]`.
+- Reverse працює правильно: так.
+
+### Масив `onlyExpenses`
+
+```java
+int[] onlyExpenses = {-10, -20, -30};
+```
+
+- Прогноз: `sum = -60`, `min = -30`, `max = -10`, `average = -20.0`.
+- Фактичний результат за поточним кодом: `sum = -60`, `min = 0`, `max = -30`,
+  `average = -20.0`.
+- Reverse: `[-30, -20, -10]`.
+- Reverse працює правильно: так.
+
+### Масив `singleValue`
+
+```java
+int[] singleValue = {42};
+```
+
+- Прогноз: `sum = 42`, `min = 42`, `max = 42`, `average = 42.0`.
+- Фактичний результат за поточним кодом: `sum = 42`, `min = 42`, `max = 0`,
+  `average = 42.0`.
+- Reverse: `[42]`.
+- Reverse працює правильно: так.
+
+### Масив `withZero`
+
+```java
+int[] withZero = {0, 100, -50};
+```
+
+- Прогноз: `sum = 50`, `min = -50`, `max = 100`,
+  `average = 16.666666666666668`.
+- Фактичний результат за поточним кодом: `sum = 50`, `min = 100`, `max = -50`,
+  `average = 16.666666666666668`.
+- Reverse: `[-50, 100, 0]`.
+- Reverse працює правильно: так.
+
+### Що буде з порожнім масивом
+
+Якщо масив порожній, то поточний код спочатку перевіряє:
+
+```java
+if (transactions.length == 0) {
+    System.err.println("Error: Array length is 0");
+    return;
+}
+```
+
+Тому для порожнього масиву програма не буде рахувати `min`, `max` і
+`average`. Вона виведе повідомлення:
+
+```text
+Error: Array length is 0
+```
+
+Після цього `return` завершить метод `main`, і ділення на `0` для `average` не
+відбудеться.
+
+Це правильно, бо в порожньому масиві немає мінімального, максимального і
+середнього значення.
+----------------------
+
+## День 3. Самостійне завдання
+
+1. Чому для `average` потрібно хоча б одне `double`-значення в обчисленні? - Бо інакше буде integer division
+2. Чому останній індекс масиву — це `length - 1`? - тому що масив починається з 0
+3. Як працює алгоритм розвороту масиву? - Беремо елементи з кінця оригінального масиву і записуємо в новий масив з початку
+4. Чому оригінальний масив не повинен змінюватися під час створення reversed
+   copy? -  Бо завдання саме на reversed copy. Оригінал має залишитися незмінним, а розвернута версія має бути окремим масивом.
+5. Які значення краще винести в константи в `CurrencyConverter`? - У CurrencyConverter краще винести в константи:
+   private static final double EUR_TO_USD = 1.5;
+   private static final double EUR_TO_GBP = 0.85;
+   private static final double EUR_TO_UAH = 45.0;
+6. Чому `NumberFormat` краще за ручне додавання символу валюти до рядка? - NumberFormat враховує локаль: символ валюти, пробіли, коми/крапки, порядок запису. Ручний рядок типу amount + "€" легко зробити неправильно.
+7. Де в цих задачах може виникнути integer division? - Integer division може бути тут:
+   int average = sum / count;
+   double average = sum / count;
+
+------------------------------
+
+## День 3. Завдання 4.5. Запуск
+
+Команди з кореня проєкту:
+
+```bash
+mvn compile
+java -cp target/classes daniil.dumshenko.ArrayExperiments
+java -cp target/classes daniil.dumshenko.ArrayStatistics
+java -cp target/classes daniil.dumshenko.CurrencyConverter
+```
+
+Результат `mvn compile`:
+
+```text
+BUILD SUCCESS
+```
+
+Результат `ArrayExperiments`:
+
+```text
+78
+64
+85
+5
+[78, 112, 64, 100, 85]
+[112.0, 78.0, 92.0, 64.0]
+85
+[[1, 2, 3], [4, 5, 6, 7, 8], [7, 8]]
+[1, 2, 3]
+[4, 5, 6, 7, 8]
+[7, 8]
+5
+2
+15
+15.0
+14.0
+0.8135941777144751
+43
+```
+
+Результат `ArrayStatistics`:
+
+```text
+sum = 1025
+min = -80
+max = 700
+average = 146.42857142857142
+plusValue = 4
+minusValue = 3
+sumOfIncomes = 1170
+sumOfExpenses = -145
+[700, -20, 50, -80, 300, -45, 120]
+[120, -45, 300, -80, 50, -20, 700]
+```
+
+Результат `CurrencyConverter`:
+
+```text
+================================
+CURRENCY CONVERTER
+================================
+Rates type: training rates
+Base amount: 100,00 €
+EUR to USD: $150.00
+EUR to GBP: ¤85.00
+EUR to UAH: 4 500,00 ₴
+Example Fee: 2%
+Rounded amount: 150
+================================
+```
+
+Ручна компіляція:
+
+```bash
+mkdir -p /tmp/codewithmosh-day3
+javac -d /tmp/codewithmosh-day3 src/main/java/daniil/dumshenko/ArrayStatistics.java src/main/java/daniil/dumshenko/CurrencyConverter.java
+java -cp /tmp/codewithmosh-day3 daniil.dumshenko.ArrayStatistics
+java -cp /tmp/codewithmosh-day3 daniil.dumshenko.CurrencyConverter
+```
+
+Результат ручної компіляції:
+
+```text
+javac завершився без помилок.
+```
+
+`ArrayStatistics` через `/tmp/codewithmosh-day3`:
+
+```text
+sum = 1025
+min = -80
+max = 700
+average = 146.42857142857142
+plusValue = 4
+minusValue = 3
+sumOfIncomes = 1170
+sumOfExpenses = -145
+[700, -20, 50, -80, 300, -45, 120]
+[120, -45, 300, -80, 50, -20, 700]
+```
+
+`CurrencyConverter` через `/tmp/codewithmosh-day3`:
+
+```text
+================================
+CURRENCY CONVERTER
+================================
+Rates type: training rates
+Base amount: 100,00 €
+EUR to USD: $150.00
+EUR to GBP: ¤85.00
+EUR to UAH: 4 500,00 ₴
+Example Fee: 2%
+Rounded amount: 150
+================================
+```
+
+## День 3. Завдання 5.2. Перевірка помилок
+
+### 1. Звернення до індексу за межами масиву
+
+Зміна в коді:
+
+```java
+System.out.println(transactions[transactions.length]);
+```
+
+Головний рядок exception:
+
+```text
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Index 7 out of bounds for length 7
+```
+
+Причина: у масиві довжиною `7` останній допустимий індекс — `6`, бо індекси
+починаються з `0`. Індекс `7` вже за межами масиву.
+
+Виправлення: прибрати звернення до `transactions[transactions.length]` або
+використовувати тільки індекси від `0` до `transactions.length - 1`.
+
+### 2. Спроба змінити `static final` константу
+
+Зміна в коді:
+
+```java
+EUR_TO_USD = 1.4;
+```
+
+Головний рядок compiler error:
+
+```text
+error: cannot assign a value to static final variable EUR_TO_USD
+```
+
+Причина: `static final` константа отримує значення один раз і після цього не
+може бути змінена.
+
+Виправлення: прибрати повторне присвоєння. Якщо потрібен інший курс, треба
+змінити початкове значення константи.
+
+### 3. Відсутній import для `NumberFormat`
+
+Зміна в коді: тимчасово прибрав import:
+
+```java
+import java.text.NumberFormat;
+```
+
+Головний рядок compiler error:
+
+```text
+error: cannot find symbol
+  symbol:   class NumberFormat
+```
+
+Причина: клас `NumberFormat` знаходиться в пакеті `java.text`, і без import
+Java не знає, що означає назва `NumberFormat`.
+
+Виправлення: повернути import:
+
+```java
+import java.text.NumberFormat;
+```
+
+У фінальному коді навмисні помилки не залишені.
+
+## День 3. Завдання 5.3. Рефакторинг
+
+Що переглянув і виправив:
+
+- В `ArrayStatistics` `min` і `max` тепер стартують з першого елемента масиву,
+  а не з `0`.
+- Назви `plusValue` і `minusValue` замінені на зрозуміліші `positiveCount` і
+  `negativeCount`.
+- Вивід масивів підписаний: `reversedTransactions` і `transactions`.
+- Вирівняне форматування в `ArrayStatistics`.
+- В `CurrencyConverter` прибраний static import `forLanguageTag`, замість нього
+  використано `Locale.forLanguageTag("uk-UA")`.
+
+Команди:
+
+```bash
+mvn compile
+java -cp target/classes daniil.dumshenko.ArrayExperiments
+java -cp target/classes daniil.dumshenko.ArrayStatistics
+java -cp target/classes daniil.dumshenko.CurrencyConverter
+git diff --check
+git status --short
+git diff --stat
+```
+
+Результат `mvn compile`:
+
+```text
+BUILD SUCCESS
+```
+
+Результат `ArrayExperiments`:
+
+```text
+78
+64
+85
+5
+[78, 112, 64, 100, 85]
+[112.0, 78.0, 92.0, 64.0]
+85
+[[1, 2, 3], [4, 5, 6, 7, 8], [7, 8]]
+[1, 2, 3]
+[4, 5, 6, 7, 8]
+[7, 8]
+5
+2
+15
+15.0
+14.0
+0.7291344154305168
+87
+```
+
+Результат `ArrayStatistics`:
+
+```text
+sum = 1025
+min = -80
+max = 700
+average = 146.42857142857142
+positiveCount = 4
+negativeCount = 3
+sumOfIncomes = 1170
+sumOfExpenses = -145
+reversedTransactions = [700, -20, 50, -80, 300, -45, 120]
+transactions = [120, -45, 300, -80, 50, -20, 700]
+```
+
+Результат `CurrencyConverter`:
+
+```text
+================================
+CURRENCY CONVERTER
+================================
+Rates type: training rates
+Base amount: 100,00 €
+EUR to USD: $150.00
+EUR to GBP: ¤85.00
+EUR to UAH: 4 500,00 ₴
+Example Fee: 2%
+Rounded amount: 150
+================================
+```
+
+Результат `git diff --check`: помилок whitespace немає.
+
+Результат `git status --short`:
+
+```text
+ M AGENTS.md
+ M learning-journal.md
+ M src/main/java/daniil/dumshenko/ArrayExperiments.java
+AM src/main/java/daniil/dumshenko/ArrayStatistics.java
+AM src/main/java/daniil/dumshenko/CurrencyConverter.java
+```
+
+Результат `git diff --stat`:
+
+```text
+ AGENTS.md                                          |   5 +
+ learning-journal.md                                | 386 +++++++++++++++++++++
+ .../java/daniil/dumshenko/ArrayExperiments.java    |   2 +-
+ .../java/daniil/dumshenko/ArrayStatistics.java     |  69 ++++
+ .../java/daniil/dumshenko/CurrencyConverter.java   |  40 +++
+ 5 files changed, 501 insertions(+), 1 deletion(-)
+```
+-----------------------
+
+1. Що таке масив? - Масив — це структура даних, яка зберігає кілька значень одного типу.
+2. Чому масив має фіксований розмір? - Тому що пам'ять для всіх елементів виділяється один раз під час створення масиву.
+3. Чому перший індекс дорівнює `0`? - Бо індекс — це зміщення від початку масиву. Перший елемент має зміщення 0.
+4. Що означає `array.length`? - Це кількість елементів у масиві.
+5. Чому останній індекс — `array.length - 1`? - Бо індексація починається з 0.
+6. Коли виникає `ArrayIndexOutOfBoundsException`? - Коли звертаються до індексу, якого не існує.
+7. Як створити двовимірний масив? - int[][] matrix = new int[3][4];
+8. Чим `Arrays.toString` відрізняється від `Arrays.deepToString`? - Arrays.toString() — для одновимірних масивів.
+   Arrays.deepToString() — для багатовимірних масивів.
+9. Як вручну знайти `min` і `max` у масиві? - Пройти циклом по всіх елементах і порівнювати їх із поточними min та max.
+10. Як розвернути масив без готового методу? - Створити новий масив і копіювати елементи з кінця початкового масиву до початку нового.
+11. Чому `average` може бути неправильним при integer division? - Бо при діленні двох int дробова частина відкидається.
+12. Для чого використовують `Math.round`, `ceil` і `floor`? - round() — округлює до найближчого цілого.
+    ceil() — округлює вгору.
+    floor() — округлює вниз.
+13. Для чого використовують `NumberFormat`? - Для форматування чисел, відсотків і валют відповідно до локалі (країни та мови).
+
+--------------------------
+
+## День 3. Підсумок
+
+### Що я сьогодні вивчив
+
+- Масиви мають фіксовану довжину, а індекси починаються з `0`.
+- Для виводу масивів треба використовувати `Arrays.toString` або
+  `Arrays.deepToString`.
+- Статистику масиву можна рахувати вручну через цикл: `sum`, `min`, `max`,
+  `average`, кількість додатних і від'ємних значень.
+- `average` треба рахувати через `double`, щоб не втратити дробову частину.
+- `NumberFormat` допомагає правильно форматувати валюту й відсотки.
+- `Math.round`, `Math.ceil` і `Math.floor` використовуються для різних типів
+  округлення.
+
+### Що я зробив самостійно
+
+- Написав `ArrayStatistics` для роботи з масивом транзакцій.
+- Написав `CurrencyConverter` для конвертації EUR в USD, GBP і UAH.
+- Перевірив крайні випадки для `ArrayStatistics`.
+- Запустив програми через Maven і через ручний `javac`.
+- Дослідив три типи помилок і виправив їх.
+
+### Де мій прогноз не збігся з результатом
+
+- У `ArrayStatistics` спочатку були неправильні результати для `min` і `max`,
+  бо змінні стартували з `0`.
+- У `CurrencyConverter` формат валюти залежить від локалі, тому символи й
+  пробіли у виводі можуть виглядати не так, як очікувалось.
+- У `ArrayExperiments` значення з `Math.random()` щоразу інше, тому його не
+  можна точно передбачити до запуску.
+
+### Які помилки я зустрів
+
+- Помилка: `ArrayIndexOutOfBoundsException`.
+  Причина: звернення до індексу `transactions.length`, якого в масиві немає.
+  Виправлення: використовувати індекси від `0` до `transactions.length - 1`.
+
+- Помилка: `cannot assign a value to static final variable`.
+  Причина: спроба змінити значення константи `static final`.
+  Виправлення: не переприсвоювати константу після ініціалізації.
+
+- Помилка: `cannot find symbol` для `NumberFormat`.
+  Причина: відсутній import `java.text.NumberFormat`.
+  Виправлення: повернути правильний import.
+
+### Що залишилося незрозумілим
+
+- Треба ще краще розібратися з локалями в `NumberFormat`, особливо чому для
+  GBP може виводитися символ `¤`.
+- Треба повторити, коли краще використовувати `double`, а коли в майбутньому
+  треба буде перейти на `BigDecimal` для грошей.
+
+### Що потрібно повторити завтра
+
+- Пошук `min` і `max` у масиві без готових методів.
+- Розворот масиву через окрему reversed copy.
+- Різницю між `Arrays.toString` і `Arrays.deepToString`.
+- `NumberFormat` для валют і відсотків.
+- Integer division і як уникати втрати дробової частини.
+
+### Фактичний час
+
+- Повторення і діагностика: точно не заміряв.
+- Курс: точно не заміряв.
+- Керована практика: точно не заміряв.
+- Самостійне завдання: точно не заміряв.
+- Перевірка та рефакторинг: точно не заміряв.
+- Підсумок: точно не заміряв.
+- Разом: точний час не записаний.
+
+------------------
+
