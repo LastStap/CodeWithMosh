@@ -31,8 +31,8 @@ public class MainTest
     /**
      * Rigourous Test :-)
      */
-    public void testApp()
+    public void testMortgageCalculation()
     {
-        assertTrue( true );
+        assertEquals(599.55, MortgageCalculator.calculatePayment(100_000, 6, 30), 0.01);
     }
 }

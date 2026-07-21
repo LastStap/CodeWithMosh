@@ -1974,3 +1974,204 @@ boolean canApplyDiscount = (isStudent && age < 30) || hasCoupon;
 - Перевірка та рефакторинг: 30 хв.
 - Підсумок: 20 хв.
 - Разом: 5 год 30 хв.
+
+---
+
+## День 6. Цикли
+
+### Повторення й ключові поняття
+
+- `for` доречний, коли відомі initialization, condition та update лічильника.
+- `while` зручний, коли кількість повторень наперед невідома, наприклад під
+  час читання input до sentinel.
+- `do-while` виконує body щонайменше один раз.
+- `break` завершує цикл, а `continue` переходить до наступної iteration.
+- For-each доречний, коли потрібні значення, але не index.
+- У `while` після `continue` легко пропустити update й отримати infinite loop.
+
+Для short-circuit виразу `denominator != 0 && 100 / denominator > 1`
+результат `false`: права частина не виконується, тому division by zero немає.
+Вираз `isStudent && 20 < 30 || hasCoupon` дає `true`: ліва conjunction стає
+`false` без перевірки `20 < 30`, після чого `hasCoupon` робить disjunction
+істинною.
+
+### Виконані задачі
+
+- `LoopExperiments` рахує суму `1..5` через `for`, `while` і `do-while` та
+  демонструє `break`, `continue` і for-each.
+- `DigitSum` арифметично відділяє останню цифру через `% 10`, додає її й
+  відкидає через `/ 10`. Перехід до `long` перед `Math.abs` покриває
+  `Integer.MIN_VALUE`.
+- `FactorialCalculator` починає accumulator з `1`; `0! = 1`, а input поза
+  `0..20` відхиляється, бо `21!` не поміщається в `long`.
+- `PalindromeChecker` будує reversed value у `long`, не використовуючи String.
+- `PrimeChecker` перевіряє divisors, поки `divisor <= number / divisor`.
+  Далі перевіряти не треба: якщо число складене, хоча б один парний до нього
+  дільник не перевищує квадратний корінь.
+- `SecondLargestFinder` за один прохід підтримує два різні максимуми, не
+  сортує й не змінює array.
+- `MultiplicationTable` використовує nested loops для таблиці 10 × 10 та
+  окремого ряду для заданого числа.
+
+### Досліджені помилки
+
+1. `i--` у зростаючому `for` віддаляє counter від умови завершення й створює
+   infinite loop; виправлення — `i++`.
+2. Factorial accumulator `0` робить результат будь-якого додатного input
+   нульовим; multiplicative identity має бути `1`.
+3. Якщо дозволити `value == largest` оновлювати другий максимум, `{9, 9, 7}`
+   дасть `9`; equality треба виключити.
+
+### Підсумок
+
+- Основна логіка відокремлена від `main` та `Scanner`.
+- Додані автоматичні normal, boundary і invalid scenarios.
+- Найважливіші ризики: off-by-one, незмінний condition state і overflow.
+- Ручний перегляд уроків Control Flow 9–16 та фіксація фактичного часу не
+  підтверджувалися в CLI й залишаються особистим навчальним кроком.
+
+---
+
+## День 7. Контрольна робота №1
+
+### План рішення
+
+Input — послідовність integer tokens; `done` або EOF завершує введення.
+Нечисловий token потрібно спожити, інакше `Scanner` нескінченно бачитиме те
+саме значення. Output для непорожнього набору: count, min, max, average,
+evenCount та oddCount. Для порожнього набору розрахунок відхиляється, а CLI
+показує `No numbers entered`.
+
+### Реалізація та review
+
+- `NumberAnalyzer.main` відповідає лише за input/output.
+- `analyze(List<Integer>)` обчислює статистику без console dependencies.
+- `NumberStatistics` групує result values і не має mutable state.
+- Перший елемент ініціалізує min/max, тому рішення працює для повністю
+  від'ємного input.
+- Сума має тип `long`, average використовує явне floating-point division.
+- Нуль є even; дублікати беруть участь у count і average.
+- Empty input відхиляється до division, тож division by zero неможливе.
+
+Для `5 -2 8 8 0` отримуємо count `5`, min `-2`, max `8`, sum `19`, average
+`3.8`, even `4`, odd `1`. Для `-3` min і max дорівнюють `-3`, average `-3.0`.
+
+### Відповіді для повторення
+
+1. `javac` компілює source у bytecode, JVM завантажує й виконує `.class`.
+2. Primitive містить value, reference variable посилається на object.
+3. Narrowing потребує explicit cast і може втратити дані.
+4. Десяткові дроби часто не мають точного binary floating-point подання.
+5. Array створюється з фіксованою length і читається через index або for-each.
+6. `toString` форматує один dimension, `deepToString` — вкладені arrays.
+7. Precedence визначає порядок operators без parentheses.
+8. Неправильний token треба перевірити й спожити перед повтором Scanner loop.
+9. Validation захищає invariants і не допускає беззмістовний calculation.
+10. `NumberFormat` форматує currency, percent та number для locale.
+11. `if` природний для ranges, `switch` — для discrete cases одного selector.
+12. `&&`/`||` не виконують праву частину, якщо result уже відомий.
+13. Обидва боки boundary знаходять `<` проти `<=` errors.
+14. `for` — коли iteration structure відома.
+15. `while` — коли завершення залежить від події або input.
+16. `do-while` виконає body хоча б один раз.
+17. `break` завершує loop, `continue` пропускає залишок iteration.
+18. For-each не підходить, якщо потрібен index або зміна структури.
+19. Off-by-one — зайва або пропущена iteration на межі.
+20. Calculation приймає parameters і повертає result; I/O лишається caller-у.
+
+### Підсумок
+
+Реалізовані всі шість показників, invalid і empty input обробляються явно,
+логіка має regression tests. Обмеження «90 хв без підказок» та фактичний час
+є особистою частиною контрольної й автоматично не підтверджувалися.
+
+---
+
+## День 8. Методи та рефакторинг
+
+### Аналіз до рефакторингу
+
+Початковий `MortgageCalculator` зберігав principal, interest, period і result у
+mutable fields, тому formula залежала від попереднього порядку calls. Межа
+principal у condition була `100`, хоча prompt вимагав `1000`. `nextInt` і
+`nextDouble` падали на неправильному token. Calculation, formatting та input
+були сильно зв'язані, а Payment Schedule був відсутній.
+
+### Зміни після рефакторингу
+
+- Межі `1000..1000000`, `(0..30]`, `1..30`, months/year і percent винесені в
+  named constants.
+- `calculatePayment` є pure static calculation із parameters.
+- `remainingBalance` і `paymentSchedule` не залежать від console state.
+- `readInt` та `readDouble` споживають invalid token і повторюють prompt.
+- Проміжні mutable fields видалені; formatting виконується після calculation.
+- Для `100000`, `6%`, `30 років` payment приблизно `599.55`, schedule містить
+  `360` balances і завершується нулем у межах floating-point tolerance.
+
+### Власний Clean Code checklist
+
+1. Назва передає intent і не потребує пояснювального коментаря.
+2. Метод має одну відповідальність.
+3. Calculation відокремлений від input/output і formatting.
+4. Magic numbers замінені named constants.
+5. Validation rules не дублюються.
+6. Немає mutable fields для локального проміжного стану.
+7. Public method явно визначає invalid input.
+8. Boundary cases покриті tests.
+9. Коментар пояснює причину, а не переказує syntax.
+10. Рефакторинг зберігає поведінку, підтверджену regression tests.
+
+### Підсумок
+
+Payment Schedule завершено, formula testable без Scanner, invalid console
+input більше не спричиняє `InputMismatchException`. Відеоуроки Clean Coding
+1–10 і фактичний час не можна підтвердити інструментально; їх треба пройти й
+зафіксувати особисто.
+
+---
+
+## День 9. Debugging, packaging і Maven
+
+### Три типи помилок
+
+1. Compile-time: тестовий `/tmp/codewithmosh-day9/BrokenSyntax.java:3` без
+   `;` дав `error: ';' expected`; виконання не починається. Фінальний source
+   проєкту має коректний syntax.
+2. Runtime: тестовий `RuntimeFailure.divide(RuntimeFailure.java:3)` виконав
+   integer division на zero й дав `ArithmeticException: / by zero`; метод
+   `divide` тепер перевіряє divisor і повертає зрозумілий
+   `IllegalArgumentException`. Regression test перевіряє цю поведінку.
+3. Logic: condition `number < limit` для inclusive sum пропускає `limit`, тому
+   для `5` результат `10` замість `15`. Correct condition — `<=`; regression
+   test очікує `15`.
+
+### Як читати stack trace й діагностувати помилку
+
+1. Відтворити її мінімальним стабільним input.
+2. Прочитати exception type та message.
+3. Знайти перший frame із власного package: це найкорисніша стартова точка,
+   але не завжди root cause.
+4. Перевірити values і branch до проблемного line.
+5. Використати breakpoint, Step Over, Step Into, Step Out і watches.
+6. Внести мінімальний fix, додати regression test, повторити весь relevant set.
+
+### Maven packaging
+
+- `compile` створює production `.class` у `target/classes`.
+- `test` також компілює tests у `target/test-classes` і запускає їх.
+- `package` після перевірок створює JAR у `target`.
+- `META-INF/MANIFEST.MF` містить `Main-Class: daniil.dumshenko.LearningApp`.
+- `LearningApp` не очікує interactive input, тому JAR можна стабільно запускати
+  командою `java -jar target/CodeWithMosh-1.0-SNAPSHOT.jar`.
+
+### Ручний debugger checklist
+
+- Breakpoint перед зміною `sum`.
+- Watch: `number`, `limit`, `sum`.
+- Step Over для iteration, Step Into/Out для method calls.
+- Conditional breakpoint `number == limit`.
+- Frames для визначення caller та callee.
+
+Ці IDE-дії залишаються ручною перевіркою: CLI не підтверджує, що breakpoint-и
+фактично були пройдені. Так само перегляд курсу й фактичний навчальний час має
+внести користувач після власного проходження.
