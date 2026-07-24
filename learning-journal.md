@@ -2175,3 +2175,103 @@ input більше не спричиняє `InputMismatchException`. Відео�
 Ці IDE-дії залишаються ручною перевіркою: CLI не підтверджує, що breakpoint-и
 фактично були пройдені. Так само перегляд курсу й фактичний навчальний час має
 внести користувач після власного проходження.
+----------------------------------------
+
+
+| Поняття | Власне пояснення | Приклад |
+|---|---|---|
+| Class |Шаблон (опис), за яким створюються об'єкти. |class Car {} |
+| Object / instance |Об'єкт - конкретна реалізація класу. |Car car = new Car(); |
+| Field |Змінна, яка зберігає дані в об'єкті. |int speed; |
+| Method |Функція, яка виконує дії з об'єктом. |void accelerate() {} |
+| Constructor |Спеціальний метод, який викликається при створенні нового об'єкта. |Car(int speed) {} |
+| Reference |Змінна, яка містить посилання на об'єкт. |Car car; |
+| State |Состояння об'єкта, яке визначає його поточний стан. |int speed = 0; |
+| Behavior |Дії, які можуть виконуватися об'єктом. |accelerate() |
+| Stack |Стек викликів, де зберігаються інформація про поточний виклик та локальні змінні. | |
+| Heap |Пам'ять для зберігання об'єктів. | |
+| Garbage collection |Автоматичне збірка непотрібних об'єктів, щоб звільнити пам'ять. | |
+
+-------------------
+
+## День 10. Керована практика: objects, references і пам'ять
+
+### Два незалежні objects
+
+Створено два objects окремими викликами `new`:
+
+```java
+Money salary = new Money(2500, "EUR");
+Money savings = new Money(1000, "EUR");
+```
+
+Після `salary.changeAmount(5000)` стан `salary` змінився на `5000 EUR`, а
+стан `savings` залишився `1000 EUR`. Кожен виклик `new` створив у heap окремий
+object із власними fields, тому зміна першого object не впливає на другий.
+
+```text
+Stack frame main                 Heap
+
+salary  -----------------------> Money { amount=5000, currency="EUR" }
+savings -----------------------> Money { amount=1000, currency="EUR" }
+```
+
+### Дві references на один object
+
+Після `Money sameReference = salary;` новий `Money` не створюється. Значення
+reference із `salary` копіюється в `sameReference`, тому обидві local variables
+ведуть до того самого object:
+
+```text
+Stack frame main                 Heap
+
+salary -----------+
+                   +-----------> Money { amount=5000, currency="EUR" }
+sameReference ----+
+
+savings -----------------------> Money { amount=1000, currency="EUR" }
+```
+
+Після `sameReference.changeAmount(3000)` читання через `salary` також показало
+`3000 EUR`: змінено один спільний object, а не самі references.
+
+### Коли object стає недосяжним
+
+Після `salary = null` object ще досяжний через `sameReference`:
+
+```text
+Stack frame main                 Heap
+
+salary: null
+sameReference ----------------> Money { amount=3000, currency="EUR" }
+```
+
+Після `sameReference = null` у програмі більше немає reference, через яку можна
+дістатися цього object:
+
+```text
+Stack frame main                 Heap
+
+salary: null                     Money { amount=3000, currency="EUR" }
+sameReference: null              (немає доступної reference)
+```
+
+Object став недосяжним і придатним для подальшого garbage collection. Це не
+означає негайного видалення: JVM самостійно визначає момент запуску garbage
+collector.
+
+### Фактичний результат запуску
+
+```text
+Initial state:
+2500 EUR
+1000 EUR
+After changing salary only:
+5000 EUR
+1000 EUR
+After changing the object through sameReference:
+3000 EUR
+The object is still reachable through sameReference:
+3000 EUR
+The Money object is now unreachable and eligible for garbage collection.
+```
