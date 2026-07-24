@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.day6;
 
 public class LoopExperiments {
   public static void main(String[] args) {

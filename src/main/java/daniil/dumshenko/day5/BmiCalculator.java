@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.day5;
 
 import java.text.DecimalFormat;
 import java.util.Scanner;

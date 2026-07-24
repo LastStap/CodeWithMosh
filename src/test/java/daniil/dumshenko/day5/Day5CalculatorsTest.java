@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.day5;
 
 import junit.framework.TestCase;
 

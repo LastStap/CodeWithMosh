@@ -1,9 +1,10 @@
-package daniil.dumshenko;
+package daniil.dumshenko.day9;
 
 import daniil.dumshenko.day6.DigitSum;
 import daniil.dumshenko.day6.PrimeChecker;
 import daniil.dumshenko.day7.NumberAnalyzer;
 import daniil.dumshenko.day7.NumberStatistics;
+import daniil.dumshenko.day8.MortgageCalculator;
 import java.util.List;
 
 public final class LearningApp {

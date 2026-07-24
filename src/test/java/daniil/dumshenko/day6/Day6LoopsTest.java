@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.day6;
 
 import daniil.dumshenko.day6.DigitSum;
 import daniil.dumshenko.day6.FactorialCalculator;

@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.day7;
 
 import daniil.dumshenko.day7.NumberAnalyzer;
 import daniil.dumshenko.day7.NumberStatistics;

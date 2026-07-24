@@ -34,7 +34,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>daniil.dumshenko.LearningApp</mainClass>
+              <mainClass>daniil.dumshenko.Main</mainClass>
             </manifest>
           </archive>
         </configuration>

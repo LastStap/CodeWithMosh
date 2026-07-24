@@ -1,4 +1,4 @@
-package daniil.dumshenko.previousLessons;
+package daniil.dumshenko.day1;
 
 public class HelloDeveloper {
     static String name = "Daniil";

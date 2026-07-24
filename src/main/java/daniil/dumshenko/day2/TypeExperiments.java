@@ -1,4 +1,4 @@
-package daniil.dumshenko.previousLessons;
+package daniil.dumshenko.day2;
 
 public class TypeExperiments {
 

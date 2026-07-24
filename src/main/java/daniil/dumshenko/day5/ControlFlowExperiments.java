@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.day5;
 
 public class ControlFlowExperiments {
   public static void main(String[] args) {

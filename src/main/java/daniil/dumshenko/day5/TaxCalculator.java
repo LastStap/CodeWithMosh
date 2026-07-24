@@ -1,4 +1,4 @@
-package daniil.dumshenko;
+package daniil.dumshenko.day5;
 
 import java.text.NumberFormat;
 import java.util.Locale;
