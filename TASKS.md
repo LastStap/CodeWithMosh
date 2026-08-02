@@ -4124,149 +4124,848 @@ java -jar target/CodeWithMosh-1.0-SNAPSHOT.jar
 
 # День 10. Classes, objects і memory allocation
 
-> Це наступний навчальний день. Завдання нижче ще не виконані.
-
 ## Мета дня
 
-Перейти від procedural коду до базового object-oriented design: створювати
-класи й об'єкти, розуміти їхній стан, поведінку та спрощену модель stack/heap.
-Почати доменну модель `Personal Finance CLI` без global mutable state.
+Перейти від procedural коду до базового object-oriented programming:
+навчитися створювати класи й об'єкти, відрізняти їхній стан від поведінки,
+використовувати constructors і розуміти, як references пов'язують змінні з
+objects. Закріпити тему на першій доменній моделі `Personal Finance CLI`.
+
+Наприкінці дня ти повинен:
+
+- пояснити різницю між class, object та reference;
+- розрізняти instance fields, local variables і parameters;
+- створювати object через constructor і пояснювати роль `new`;
+- розуміти, що два objects одного class мають незалежний state;
+- розуміти, що дві references можуть вказувати на один object;
+- намалювати спрощену схему stack і heap для заданого фрагмента коду;
+- пояснити, коли object стає недосяжним і кандидатом для garbage collection;
+- визначати responsibilities та invariants класу до написання коду;
+- створити й перевірити класи `Money`, `Category` і `Transaction`;
+- не змішувати domain logic із console input/output;
+- порівняти procedural та object-oriented представлення одних даних;
+- перевірити constructors, незалежність objects і текстове представлення.
 
 ## Розклад дня
 
 | Блок | Час |
 |---|---:|
-| Повторення Дня 9 | 30 хв |
-| Java Part 2, Classes 1–6 | 90 хв |
-| Керована практика | 60 хв |
-| Доменні класи | 120 хв |
-| Тести та review | 30 хв |
-| Підсумок | 20 хв |
+| 1. Повторення та допуск | 30 хв |
+| 2. Блок курсу | 90 хв |
+| 3. Керована практика | 60 хв |
+| 4. Самостійне завдання | 120 хв |
+| 5. Перевірка та рефакторинг | 30 хв |
+| 6. Підсумок дня | 20 хв |
 | **Разом** | **5 год 30 хв** |
 
-## 1. Повторення і допуск
+---
 
-1. Запусти `mvn test`, `mvn package` і створений JAR.
-2. Поясни різницю між compile-time, runtime і logic error.
-3. Намалюй порядок читання stack trace.
-4. Без конспекту поясни class, object, field, method і constructor.
-5. Запиши прогноз: де зберігається local reference і де сам object.
+## 1. Повторення та допуск — 30 хвилин
 
-## 2. Матеріал курсу
+### Завдання 1.1. Перевір готовність після Дня 9
 
-Пройди **Ultimate Java Part 2: Object-oriented Programming, Classes 1–6**.
-Після кожних двох уроків із пам'яті запиши 3–5 тез. У конспекті поясни:
+Перед новою темою переконайся, що baseline проєкту зелений:
 
-| Поняття | Власне пояснення | Приклад |
-|---|---|---|
-| Class | | |
-| Object / instance | | |
-| Field | | |
-| Method | | |
-| Constructor | | |
-| Reference | | |
-| State | | |
-| Behavior | | |
-| Stack | | |
-| Heap | | |
-| Garbage collection | | |
-
-## 3. Керована практика
-
-Створи два незалежні прості об'єкти одного навчального класу. Зміни стан
-лише одного й поясни, чому інший не змінився. Потім створи другу reference на
-перший object, зміни його через цю reference і поясни результат.
-
-Намалюй схему для:
-
-```java
-Money salary = new Money(2500, "EUR");
-Money sameReference = salary;
+```bash
+mvn test
+mvn package
+java -jar target/CodeWithMosh-1.0-SNAPSHOT.jar
+git status
 ```
 
-Покажи local references у stack frame, object у heap і момент, коли object
-стає недосяжним для подальшого garbage collection.
+Запиши в `learning-journal.md`:
 
-## 4. Personal Finance CLI: доменна модель
+- кількість виконаних тестів;
+- чи завершився build успішно;
+- що вивів запускний JAR;
+- які зміни показує Git до початку Дня 10.
 
-Створи package `daniil.dumshenko.finance` та класи:
+Якщо якась команда падає, не переходь одразу до нового коду. Спочатку визнач:
 
-- `Money` — amount і currency;
-- `Category` — name і type (`INCOME` або `EXPENSE`);
-- `Transaction` — description, amount, category і date.
+1. це compile-time, runtime чи logic error;
+2. перший релевантний рядок повідомлення;
+3. чи пов'язана проблема з кодом Дня 9;
+4. який найменший крок відновлює зелений baseline.
+
+### Завдання 1.2. Повторення без конспекту
+
+У `learning-journal.md` додай підрозділ:
+
+```markdown
+## День 10. Повторення Дня 9
+```
+
+Без конспекту письмово відповідай:
+
+1. Чим compile-time error відрізняється від runtime error?
+2. Чому logic error може не спричинити exception?
+3. З якого місця починають читати stack trace?
+4. Що таке stack frame у контексті виклику method?
+5. Для чого потрібні breakpoint, Step Over, Step Into і Step Out?
+6. Чим `mvn compile`, `mvn test` і `mvn package` відрізняються?
+7. Для чого JAR містить `META-INF/MANIFEST.MF`?
+8. Як regression test захищає вже виправлену помилку?
+
+Потім відкрий записи Дня 9 і коротко виправ або доповни неточні відповіді.
+
+### Завдання 1.3. Прогноз перед новою темою
+
+До перегляду курсу запиши власні припущення:
+
+1. Чим class може відрізнятися від object?
+2. Які дані object повинен зберігати всередині себе?
+3. Для чого constructor, якщо fields можна було б заповнити пізніше?
+4. Що, на твою думку, повертає вираз із `new`?
+5. Чи зміниться другий object, якщо змінити перший object того самого class?
+6. Що станеться, якщо дві variables посилаються на той самий object?
+7. Де приблизно можуть зберігатися local variable та створений object?
+
+Не шукай правильні відповіді перед прогнозом. Мета — порівняти початкову
+модель із тим, що ти зрозумієш після практики.
+
+### Критерій завершення блоку
+
+- `mvn test` і `mvn package` успішні до змін Дня 10.
+- Запускний JAR із Дня 9 працює.
+- Зафіксований початковий Git-стан.
+- Є відповіді на 8 питань повторення.
+- Є 7 прогнозів про classes, objects, references і memory.
+
+---
+
+## 2. Блок курсу — 90 хвилин
+
+### Матеріал курсу
+
+Пройди перші уроки секції **Ultimate Java Part 2: Object-oriented
+Programming -> Classes** до теми memory allocation включно.
+
+Орієнтовний обсяг:
+
+1. Classes.
+2. Creating Classes.
+3. Creating Objects.
+4. Memory Allocation.
+5. Procedural Programming.
+6. Encapsulation або наступний вступний урок, якщо він входить у перші шість
+   уроків твоєї версії курсу.
+
+Назви та порядок уроків можуть трохи відрізнятися. Не переходь цього дня до
+inheritance, polymorphism або interfaces: спочатку закріпи базову модель
+class/object/reference.
+
+### Як працювати з відео
+
+1. Перед кожним уроком запиши одне питання, на яке очікуєш відповідь.
+2. Після прикладу class постав відео на паузу й назви його state та behavior.
+3. Після створення object відтвори приклад вручну, не копіюючи код.
+4. Перед поясненням memory allocation намалюй власний прогноз stack/heap.
+5. Після пояснення виправ схему іншим кольором або окремим списком.
+6. Після кожних двох уроків закрий конспект і запиши 3-5 тез із пам'яті.
+7. Приклад procedural programming спочатку оціни сам: які дані можуть бути
+   випадково роз'єднані або переплутані?
+
+### Завдання 2.1. Конспект понять
+
+У `learning-journal.md` додай підрозділ:
+
+```markdown
+## День 10. Конспект курсу
+```
+
+Заповни таблицю власними словами:
+
+| Поняття | Що це | Приклад без готового коду | Типова помилка |
+|---|---|---|---|
+| class |  |  |  |
+| object / instance |  |  |  |
+| field |  |  |  |
+| method |  |  |  |
+| constructor |  |  |  |
+| parameter |  |  |  |
+| local variable |  |  |  |
+| reference |  |  |  |
+| state |  |  |  |
+| behavior |  |  |  |
+| `new` |  |  |  |
+| stack frame |  |  |  |
+| heap |  |  |  |
+| garbage collection |  |  |  |
+
+### Завдання 2.2. Class, object і reference
+
+Письмово поясни:
+
+1. Чому class називають шаблоном, але class не є готовим object?
+2. Чи можуть два objects одного class мати різний state?
+3. Чи може одна reference в різний час посилатися на різні objects?
+4. Чи може object існувати без доступної reference у програмі?
+5. Чим `null` відрізняється від object із порожніми fields?
+6. Чому порівнювати references — не завжди те саме, що порівнювати вміст?
+
+Для кожної відповіді наведи короткий приклад словами, а не копіюй визначення.
+
+### Завдання 2.3. State, behavior і responsibilities
+
+Для трьох предметів — банківського рахунку, автомобіля та книги — склади
+таблицю:
+
+| Предмет | Можливий state | Можлива behavior | Що не належить цьому class |
+|---|---|---|---|
+| Банківський рахунок |  |  |  |
+| Автомобіль |  |  |  |
+| Книга |  |  |  |
+
+Після таблиці відповідай:
+
+1. Чому не кожне пов'язане з предметом значення має бути його field?
+2. Як визначити, що method належить конкретному class?
+3. Що станеться з class, який має забагато різних responsibilities?
+
+### Завдання 2.4. Спрощена модель stack і heap
+
+Намалюй від руки або в журналі три схеми:
+
+1. local primitive variable без створення object;
+2. одна local reference та один object;
+3. дві local references на один object.
+
+Для кожної схеми познач:
+
+- активний method і його stack frame;
+- local variables;
+- reference окремо від object;
+- fields усередині object;
+- напрямок зв'язку reference -> object;
+- момент, коли object перестає бути reachable.
+
+Важливо: це навчальна спрощена модель JVM. Не стверджуй, що конкретна JVM
+завжди фізично розміщує кожне значення саме так через можливі оптимізації.
+
+### Критерій завершення блоку
+
+- Пройдені перші уроки секції Classes до memory allocation включно.
+- Таблиця з 14 поняттями заповнена власними словами.
+- Є відповіді про class, object, reference і `null`.
+- State та behavior розділені для трьох прикладів.
+- Намальовані три схеми stack/heap.
+- Початковий прогноз порівняний із поясненням курсу.
+
+---
+
+## 3. Керована практика — 60 хвилин
+
+### Завдання 3.1. Перевір наявний `Money`
+
+Відкрий файл:
+
+```text
+src/main/java/daniil/dumshenko/day10/Money.java
+```
+
+Не переписуй його одразу. Спочатку в журналі запиши:
+
+- які fields уже є;
+- які constructors і methods уже є;
+- що є state, а що behavior;
+- які значення зараз може мати object;
+- які некоректні значення class поки дозволяє створити;
+- чи можна змінити state після створення і чи це потрібно;
+- чи має class зайві responsibilities.
+
+Якщо файл порожній або містить лише початковий експеримент, зафіксуй це й
+використай його як основу. Не видаляй роботу без аналізу.
+
+### Завдання 3.2. Два незалежні objects
+
+Створи навчальний клас запуску:
+
+```text
+src/main/java/daniil/dumshenko/day10/ObjectExperiments.java
+```
+
+У `main` створи два різні objects `Money` з різними або однаковими початковими
+значеннями. Перед запуском заповни таблицю:
+
+| Крок | Прогноз для першого object | Прогноз для другого object |
+|---|---|---|
+| Після створення |  |  |
+| Після зміни лише першого |  |  |
+| Після повторного виводу |  |  |
+
+Якщо твій фінальний `Money` буде immutable, цей експеримент можна виконати до
+фінального рефакторингу або створити новий object замість зміни fields. У
+журналі чітко розділи mutation object і переприсвоєння reference.
+
+Після запуску поясни:
+
+1. чому objects мають незалежний state;
+2. чому однакові значення fields не роблять їх одним object;
+3. скільки викликів `new` і скільки objects було створено.
+
+### Завдання 3.3. Дві references на один object
+
+Створи другу reference на перший object без другого виклику `new`. Перевір
+state через обидві references до та після зміни.
+
+Перед запуском запиши прогноз:
+
+| Перевірка | Очікуваний результат | Чому |
+|---|---|---|
+| State через першу reference |  |  |
+| State через другу reference |  |  |
+| Кількість створених objects |  |  |
+| Результат після mutation |  |  |
+
+Після запуску поясни різницю між:
+
+- створенням нового object;
+- копіюванням reference;
+- переприсвоєнням reference;
+- зміною state object.
+
+### Завдання 3.4. Reachability і garbage collection
+
+На папері або в журналі продовж схему попереднього завдання для трьох станів:
+
+1. дві references вказують на один object;
+2. одна reference отримує `null` або починає вказувати на інший object;
+3. жодна reachable reference більше не вказує на початковий object.
+
+Для кожного стану вкажи:
+
+- скільки reachable references має object;
+- чи можна ще звернутися до object із поточного коду;
+- чи став він кандидатом для garbage collection;
+- чому кандидат не означає, що пам'ять буде звільнена негайно.
+
+Не використовуй `System.gc()` як доказ моментального видалення object.
+
+### Завдання 3.5. Запуск
+
+З кореня проєкту виконай:
+
+```bash
+mvn compile
+java -cp target/classes daniil.dumshenko.day10.ObjectExperiments
+```
+
+Порівняй фактичний результат із кожним прогнозом. Несподіваний результат не
+стирай із журналу — поясни причину поруч.
+
+### Критерій завершення блоку
+
+- Проаналізовано наявний `Money.java` до змін.
+- Створено `ObjectExperiments.java`.
+- Перевірено два незалежні objects.
+- Перевірено дві references на один object.
+- Пояснено різницю між mutation і reference reassignment.
+- Намальовано три стани reachability.
+- Пояснено, чому garbage collection не запускається за вимогою програми.
+- Фактичні результати порівняні з прогнозами.
+
+---
+
+## 4. Самостійне завдання — 120 хвилин
+
+### Загальний контекст
+
+Почни доменну модель майбутнього `Personal Finance CLI`. Цього дня потрібні
+лише objects у пам'яті. Не додавай `Scanner`, menu, repository, service,
+database, файли, inheritance або framework.
+
+Усі класи Дня 10 розміщуй у package:
+
+```text
+daniil.dumshenko.day10
+```
+
+Перед написанням коду створи в журналі таблицю дизайну:
+
+| Class | Responsibility | State | Behavior | Invariants |
+|---|---|---|---|---|
+| `Money` |  |  |  |  |
+| `Category` |  |  |  |  |
+| `Transaction` |  |  |  |  |
+
+### Завдання 4.1. Заверши `Money`
+
+Використай наявний файл:
+
+```text
+src/main/java/daniil/dumshenko/day10/Money.java
+```
+
+Class має представляти грошову суму та currency.
+
+Мінімальні вимоги:
+
+- amount зберігається як числове значення;
+- currency зберігається як непорожній текст;
+- constructor отримує всі обов'язкові дані;
+- object не можна створити з `NaN` або positive/negative infinity;
+- `null`, порожня або blank currency відхиляються;
+- class надає контрольований доступ до state;
+- вивід показує зміст object, а не default `ClassName@hash`;
+- domain class не читає input і не друкує результат самостійно.
+
+До коду письмово виріши:
+
+1. Чи дозволяє твоя модель negative amount?
+2. Якщо дозволяє, що означає знак у `Money`?
+3. Якщо не дозволяє, який class надалі відповідатиме за income/expense?
+4. Чи повинен `Money` змінюватися після створення?
+5. Які methods справді потрібні сьогодні, а які були б передчасними?
+
+Не використовуй `double` для production-фінансів без пояснення його обмежень.
+Для поточного навчального етапу можеш залишити тип, який уже є в проєкті, але
+зафіксуй ризик rounding і майбутню альтернативу на кшталт `BigDecimal`.
+
+### Завдання 4.2. Створи `Category`
+
+Створи файл:
+
+```text
+src/main/java/daniil/dumshenko/day10/Category.java
+```
+
+Class має описувати категорію transaction.
 
 Вимоги:
 
-- не використовувати public mutable fields або global mutable state;
-- не читати `Scanner` і не друкувати консоль усередині доменних класів;
-- constructor створює валідний object або відхиляє неправильні аргументи;
-- amount не може бути `NaN`/infinite; currency і назви не можуть бути blank;
-- transaction amount і category type мають узгоджену, письмово визначену
-  семантику;
-- створити щонайменше дві категорії й чотири transactions;
-- показати стан кожного object без default `ClassName@hash` output;
-- не додавати setters автоматично: спочатку обґрунтувати допустимі зміни стану.
+- category має name;
+- category має type `INCOME` або `EXPENSE`;
+- не використовуй довільні String-значення для type, якщо можеш обмежити
+  набір допустимих значень мовою Java;
+- `null`, порожній або blank name відхиляються;
+- відсутній type відхиляється;
+- constructor створює одразу валідний object;
+- текстове представлення містить name і type;
+- class не відповідає за читання menu або зберігання списку transactions.
 
-Перед кодом запиши responsibilities і invariants кожного класу. Не додавай
-repository, service, database або inheritance — вони не потрібні цього дня.
+Перед реалізацією поясни, чому fixed set із двох значень безпечніший за
+довільний текст і яку помилку він не дозволяє зробити.
 
-## 5. Procedural проти OOP
+### Завдання 4.3. Створи `Transaction`
 
-Реалізуй маленький procedural приклад transaction через окремі змінні, а
-потім той самий сценарій через objects. Порівняй:
+Створи файл:
 
-- де зберігаються пов'язані дані;
-- хто гарантує invariants;
-- як додається наступна transaction;
-- ризик переплутати параметри;
-- тестованість і читабельність.
+```text
+src/main/java/daniil/dumshenko/day10/Transaction.java
+```
 
-Висновок не повинен стверджувати, що OOP завжди краще: назви trade-offs для
-малих одноразових розрахунків.
+Class має об'єднати:
 
-## 6. Тести й review
+- description;
+- amount як object `Money`;
+- category як object `Category`;
+- date.
 
-Додай тести для:
+Вимоги:
 
-- валідних `Money`, `Category`, `Transaction`;
-- blank/null currency, category name і description;
-- неправильного amount;
-- незалежності двох objects;
-- очікуваного текстового представлення.
+- усі чотири значення передаються через constructor;
+- `null` для amount, category або date відхиляється;
+- `null`, порожній або blank description відхиляється;
+- `Transaction` використовує вже створені domain objects, а не дублює їхні
+  fields окремими primitive/String parameters;
+- текстове представлення дозволяє побачити всі важливі дані transaction;
+- class не читає консоль, не друкує себе й не зберігає глобальний список;
+- не додавай setters автоматично: кожну допустиму mutation спочатку
+  обґрунтуй правилом предметної області.
+
+Окремо письмово визнач семантику amount:
+
+- або amount завжди non-negative, а напрям задає `Category` type;
+- або знак amount кодує напрям і має бути узгоджений із `Category` type.
+
+Обери один варіант і застосуй його послідовно. Не залишай ситуацію, де
+negative expense випадково перетворюється на income без чіткого правила.
+
+### Завдання 4.4. Створи сценарій `PersonalFinanceDemo`
+
+Створи файл:
+
+```text
+src/main/java/daniil/dumshenko/day10/PersonalFinanceDemo.java
+```
+
+У `main`:
+
+1. створи щонайменше одну income category;
+2. створи щонайменше дві expense categories;
+3. створи щонайменше чотири transactions;
+4. повторно використай одну category у двох transactions;
+5. виведи кожну transaction зрозумілим текстом;
+6. продемонструй, що пов'язані дані передаються як objects;
+7. не додавай інтерактивний input — використовуй контрольовані test data.
+
+Рекомендований набір сценаріїв для ручної перевірки:
+
+| Description | Category type | Amount | Очікування |
+|---|---|---:|---|
+| Salary | `INCOME` | додатне | Object створено |
+| Groceries | `EXPENSE` | додатне | Object створено |
+| Transport | `EXPENSE` | додатне | Object створено |
+| Друга покупка | `EXPENSE` | додатне | Та сама category повторно використана |
+
+Назви та суми обери самостійно. Таблиця описує поведінку, а не готовий код.
+
+### Завдання 4.5. Procedural проти OOP
+
+У `PersonalFinanceDemo` або окремому короткому експерименті представ одну
+transaction двома способами:
+
+1. procedural — окремими local variables;
+2. object-oriented — через `Money`, `Category` і `Transaction`.
+
+У журналі порівняй:
+
+| Критерій | Окремі variables | Domain objects |
+|---|---|---|
+| Де зібрані пов'язані дані |  |  |
+| Хто перевіряє invariants |  |  |
+| Ризик переплутати arguments |  |  |
+| Додавання другої transaction |  |  |
+| Повторне використання category |  |  |
+| Тестованість |  |  |
+| Кількість початкового коду |  |  |
+
+Зроби збалансований висновок: domain objects корисні для моделі, що росте,
+але кілька local variables можуть бути простішими для одноразового маленького
+розрахунку. Не пиши, що OOP автоматично завжди краще.
+
+### Завдання 4.6. Перевір неправильні значення
+
+Тимчасово спробуй створити objects із такими даними:
+
+| Class | Некоректні дані | Очікувана поведінка |
+|---|---|---|
+| `Money` | `null` currency | Створення відхилено |
+| `Money` | blank currency | Створення відхилено |
+| `Money` | `NaN` amount | Створення відхилено |
+| `Money` | infinite amount | Створення відхилено |
+| `Category` | blank name | Створення відхилено |
+| `Category` | `null` type | Створення відхилено |
+| `Transaction` | blank description | Створення відхилено |
+| `Transaction` | `null` amount | Створення відхилено |
+| `Transaction` | `null` category | Створення відхилено |
+| `Transaction` | `null` date | Створення відхилено |
+
+Для кожного випадку запиши actual exception type та message. Не залишай
+навмисно неправильне створення objects у фінальному `main`.
+
+### Завдання 4.7. Запуск
+
+З кореня проєкту виконай:
+
+```bash
+mvn compile
+java -cp target/classes daniil.dumshenko.day10.ObjectExperiments
+java -cp target/classes daniil.dumshenko.day10.PersonalFinanceDemo
+```
+
+Потім вручну скомпілюй package Дня 10 в окрему директорію. У PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Force target/day10-manual
+$day10Sources = Get-ChildItem src/main/java/daniil/dumshenko/day10/*.java | ForEach-Object { $_.FullName }
+javac -d target/day10-manual $day10Sources
+java -cp target/day10-manual daniil.dumshenko.day10.ObjectExperiments
+java -cp target/day10-manual daniil.dumshenko.day10.PersonalFinanceDemo
+```
+
+### Критерій завершення блоку
+
+- Перед кодом визначені responsibilities та invariants трьох classes.
+- `Money` має валідні amount і currency.
+- `Category` обмежує type значеннями `INCOME` та `EXPENSE`.
+- `Transaction` використовує `Money` і `Category` як objects.
+- Визначена послідовна семантика amount.
+- Domain classes не залежать від console I/O та global mutable state.
+- Створені щонайменше 3 categories і 4 transactions.
+- Default `ClassName@hash` не потрапляє у фінальний output.
+- Перевірені всі invalid cases із таблиці.
+- Є збалансоване порівняння procedural та OOP.
+- Класи запускаються через Maven і ручний `javac`.
+
+---
+
+## 5. Перевірка та рефакторинг — 30 хвилин
+
+### Завдання 5.1. Додай автоматичні тести
+
+Створи tests у package:
+
+```text
+src/test/java/daniil/dumshenko/day10
+```
+
+Дотримуйся JUnit-стилю, який уже використовується в проєкті. Додай реальні
+перевірки для таких сценаріїв:
+
+`Money`:
+
+1. valid amount і currency зберігаються правильно;
+2. `null` currency відхиляється;
+3. empty і blank currency відхиляються;
+4. `NaN` відхиляється;
+5. positive та negative infinity відхиляються;
+6. textual representation містить amount і currency.
+
+`Category`:
+
+1. valid name і type зберігаються правильно;
+2. `null`, empty і blank name відхиляються;
+3. `null` type відхиляється;
+4. textual representation містить name і type.
+
+`Transaction`:
+
+1. valid transaction зберігає передані objects і date;
+2. invalid description відхиляється;
+3. `null` amount, category і date відхиляються окремими tests;
+4. правило узгодженості amount/category виконується, якщо воно є в моделі;
+5. textual representation містить ключові дані.
+
+Objects і references:
+
+1. два окремо створені objects не ділять mutable state;
+2. дві references на один mutable object бачать той самий state — лише якщо
+   фінальний design справді допускає mutation;
+3. immutable design перевіряється через відсутність небезпечної зміни state,
+   а не через fake-test.
+
+### Завдання 5.2. Перевір межі відповідальності
+
+Переглянь кожен domain class і відповідай `так` або `ні`:
+
+- Чи class має одну зрозумілу responsibility?
+- Чи всі його fields належать одному domain concept?
+- Чи constructor гарантує invariants?
+- Чи object не залишається частково ініціалізованим?
+- Чи немає `public` mutable fields?
+- Чи setters не додані лише «про всяк випадок»?
+- Чи немає `Scanner`, `System.in` або `System.out` у domain class?
+- Чи немає `static` mutable collection із transactions?
+- Чи назви methods описують behavior, а не деталі реалізації?
+- Чи textual representation корисне для людини?
+
+Якщо відповідь `ні`, зроби мінімальний рефакторинг і запиши причину.
+
+### Завдання 5.3. Досліди й виправ три помилки
+
+По черзі створи лише тимчасово, відтвори й виправ:
+
+1. скопіюй reference замість створення другого object і помилково очікуй
+   незалежний state;
+2. дозволь blank currency або category name;
+3. виведи object без корисного textual representation та отримай
+   `ClassName@hash`.
+
+Для кожної помилки запиши:
+
+- що змінив;
+- який результат прогнозував;
+- який результат отримав;
+- яку неправильну модель class/object/reference виявив;
+- як виправив;
+- який test захищає виправлення.
+
+Не залишай навмисні помилки у фінальному коді.
+
+### Завдання 5.4. Фінальні команди
 
 Виконай:
 
 ```bash
 mvn test
 mvn package
+java -cp target/classes daniil.dumshenko.day10.ObjectExperiments
+java -cp target/classes daniil.dumshenko.day10.PersonalFinanceDemo
 java -jar target/CodeWithMosh-1.0-SNAPSHOT.jar
 git diff --check
-git status --short
+git status
+git diff --stat
 ```
 
-## 7. Контрольні запитання та підсумок
+Якщо `Main-Class` із Дня 9 ще не запускає demo Дня 10, це не помилка: JAR має
+залишатися працездатним, а `PersonalFinanceDemo` запускається окремою командою.
+Не змінюй entry point лише заради дублювання одного запуску.
+
+### Критерій завершення блоку
+
+- Додані tests для valid та invalid domain objects.
+- Tests справді перевіряють behavior, а не лише факт запуску.
+- Перевірені межі responsibilities трьох classes.
+- Досліджені й виправлені 3 типові OOP-помилки.
+- `mvn test` і `mvn package` успішні.
+- Обидва класи запуску працюють.
+- `git diff --check` не показує whitespace errors.
+- Git містить лише очікувані зміни.
+
+---
+
+## 6. Підсумок дня — 20 хвилин
+
+### Завдання 6.1. Контрольні запитання
+
+Без конспекту письмово відповідай:
 
 1. Чим class відрізняється від object?
-2. Що є state, а що behavior?
-3. Що повертає оператор `new`?
-4. Чи містить reference сам object?
-5. Чому дві references можуть бачити один стан?
-6. Чому два objects одного class мають незалежний стан?
-7. Що приблизно містять stack і heap?
-8. Коли object стає кандидатом для garbage collection?
-9. Чим instance field відрізняється від local variable?
-10. Чому global mutable state ускладнює тести?
-11. Які invariants мають три доменні класи?
-12. Яка користь від об'єднання даних і поведінки?
+2. Чим object відрізняється від reference?
+3. Що є state, а що behavior?
+4. Для чого потрібен constructor?
+5. Що приблизно відбувається під час виконання `new`?
+6. Чим instance field відрізняється від local variable і parameter?
+7. Чому два objects одного class мають незалежний state?
+8. Чому дві references можуть бачити одну й ту саму зміну state?
+9. Чим створення object відрізняється від копіювання reference?
+10. Що означає `null` reference?
+11. Що приблизно показують stack і heap у спрощеній моделі?
+12. Коли object стає unreachable?
+13. Чому garbage collector не зобов'язаний одразу звільнити пам'ять?
+14. Що таке responsibility class?
+15. Що таке invariant і хто має його захищати?
+16. Чому `public` mutable fields небезпечні?
+17. Чому domain class не повинен читати `Scanner`?
+18. Чому дві String-параметри легше переплутати, ніж два domain objects?
+19. Які invariants мають `Money`, `Category` і `Transaction`?
+20. Коли procedural рішення може бути простішим і достатнім?
 
-У журнал додай підсумок, схему stack/heap, порівняння procedural/OOP,
-результати тестів, труднощі та фактичний час.
+### Завдання 6.2. Щоденний звіт
+
+Додай у `learning-journal.md`:
+
+```markdown
+## День 10. Підсумок
+
+### Що я сьогодні вивчив
+-
+-
+-
+
+### Що я зробив самостійно
+-
+-
+
+### Де мій прогноз не збігся з результатом
+-
+
+### Class, object і reference власними словами
+- Class:
+- Object:
+- Reference:
+
+### Моя схема stack і heap
+- Посилання на схему або текстовий опис:
+
+### Responsibilities та invariants
+- Money:
+- Category:
+- Transaction:
+
+### Procedural проти OOP
+- Перевага domain objects:
+- Trade-off domain objects:
+- Коли procedural варіант достатній:
+
+### Які помилки я зустрів
+- Помилка:
+  Причина:
+  Виправлення:
+  Regression test:
+
+### Що залишилося незрозумілим
+-
+
+### Що потрібно повторити завтра
+-
+
+### Фактичний час
+- Повторення і допуск:
+- Курс:
+- Керована практика:
+- Самостійне завдання:
+- Перевірка та рефакторинг:
+- Підсумок:
+- Разом:
+```
+
+### Завдання 6.3. Усне пояснення
+
+Без конспекту протягом 5 хвилин поясни:
+
+> Чим class відрізняється від object і reference, як два objects одного class
+> зберігають незалежний state, чому дві references можуть вказувати на один
+> object, що показує спрощена модель stack/heap і як constructors захищають
+> invariants доменної моделі?
+
+Потім окремо за 1-2 хвилини поясни, чому `Money`, `Category` і `Transaction`
+кращі за набір непов'язаних variables у моделі, що буде розширюватися.
+
+Якщо пояснення переривається, запиши конкретну прогалину до тем повторення.
+
+---
+
+## Фінальний checklist Дня 10
+
+- [ ] Закритий допуск за День 9.
+- [ ] `mvn test`, `mvn package` і запуск JAR успішні до нових змін.
+- [ ] Виконане повторення без конспекту.
+- [ ] Записані прогнози про class, object, reference і memory.
+- [ ] Пройдені уроки Classes до memory allocation включно.
+- [ ] Заповнена таблиця з 14 ключовими поняттями.
+- [ ] Пояснена різниця між class, object і reference.
+- [ ] Пояснена різниця між field, local variable і parameter.
+- [ ] Намальовані три схеми stack/heap.
+- [ ] Позначено момент, коли object стає unreachable.
+- [ ] Проаналізовано початковий стан `Money.java`.
+- [ ] Створено `ObjectExperiments.java`.
+- [ ] Перевірено два незалежні objects.
+- [ ] Перевірено дві references на один object.
+- [ ] Пояснена різниця між mutation та reference reassignment.
+- [ ] Визначені responsibilities та invariants domain classes.
+- [ ] Завершено `Money.java`.
+- [ ] `Money` відхиляє invalid amount і currency.
+- [ ] Створено `Category.java`.
+- [ ] Category type обмежений значеннями `INCOME` та `EXPENSE`.
+- [ ] Створено `Transaction.java`.
+- [ ] `Transaction` використовує `Money` та `Category` як objects.
+- [ ] Визначена семантика amount для income й expense.
+- [ ] Domain classes не залежать від console I/O.
+- [ ] Немає `public` mutable fields або global mutable state.
+- [ ] Створено `PersonalFinanceDemo.java`.
+- [ ] Створені щонайменше 3 categories і 4 transactions.
+- [ ] Одна category повторно використана кількома transactions.
+- [ ] Textual representation не містить default `ClassName@hash`.
+- [ ] Перевірені invalid constructor arguments.
+- [ ] Додані автоматичні tests Дня 10.
+- [ ] Перевірена незалежність objects або immutable design.
+- [ ] Досліджені й виправлені 3 типові помилки.
+- [ ] Зроблено порівняння procedural та OOP із trade-offs.
+- [ ] Класи запускаються через Maven.
+- [ ] Package Дня 10 компілюється ручним `javac`.
+- [ ] `mvn test` і `mvn package` успішні після змін.
+- [ ] `git diff --check` не показує whitespace errors.
+- [ ] Заповнений підсумок із фактичним часом.
+- [ ] Тему дня пояснено вголос без конспекту.
 
 ## День вважається завершеним, якщо
 
-1. Створені й протестовані `Money`, `Category` і `Transaction`.
-2. Objects не залежать від global mutable state і console I/O.
-3. Пояснена різниця між class, object і reference.
-4. Намальована коректна спрощена схема stack/heap.
-5. Порівняно procedural та OOP рішення з trade-offs.
-6. `mvn test`, `mvn package` і запуск JAR успішні.
+1. Ти можеш без конспекту пояснити class, object, reference, state, behavior і
+   constructor.
+2. Ти можеш намалювати дві незалежні objects і дві references на один object
+   у спрощеній моделі stack/heap.
+3. Ти розумієш різницю між mutation object і переприсвоєнням reference.
+4. `Money`, `Category` і `Transaction` мають чіткі responsibilities та
+   захищають визначені invariants.
+5. Domain classes не містять console I/O, `public` mutable fields або global
+   mutable state.
+6. `PersonalFinanceDemo` створює і показує щонайменше 4 valid transactions.
+7. Invalid constructor arguments перевірені автоматичними tests.
+8. Procedural та OOP варіанти порівняні без твердження, що один підхід завжди
+   кращий.
+9. `mvn test`, `mvn package`, обидва demo-запуски та ручний `javac` успішні.
+10. У журналі записані прогнози, схеми, помилки, результати tests, фактичний
+    час і тема для повторення.
+11. У Git видно лише очікувані зміни без whitespace errors.
